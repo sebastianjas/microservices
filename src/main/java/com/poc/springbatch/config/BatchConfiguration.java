@@ -31,31 +31,23 @@ public class BatchConfiguration {
     private CSVWriter csvWriter;
 
     @Bean
-    public Step stepOne() {
+    public Step stepOne(EmployeeReader employeeReader) {
         return stepBuilderFactory.get("stepOne")
                 .<Employee, Employee>chunk(100)
-                .reader(reader())
+                .reader(employeeReader.reader())
                 .processor(new Processor())
-                .writer(writer())
+                .writer(csvWriter.writer())
                 .listener(new WriterListener())
                 .build();
     }
 
     @Bean
-    public Job exportEmployeesJob() {
+    public Job exportEmployeesJob(EmployeeReader employeeReader) {
         return jobBuilderFactory.get("Export employees to CSV job")
                 .incrementer(new RunIdIncrementer())
-                .flow(stepOne())
+                .flow(stepOne(employeeReader))
                 .end()
                 .build();
-    }
-
-    private ItemWriter<Employee> writer() {
-        return csvWriter.writer();
-    }
-
-    private ItemReader<Employee> reader() {
-        return employeeReader.reader(null);
     }
 
 }

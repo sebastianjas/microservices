@@ -30,7 +30,7 @@ public class LoadController {
     public BatchStatus load(@RequestParam("date") String date) throws Exception {
         var parameters = new JobParametersBuilder()
                 .addDate("time", new Date())
-                .addString("cuttingDate", date)
+                .addString("limitDate", date)
                 .toJobParameters();
         var jobExecution = jobLauncher.run(job, parameters);
         while(jobExecution.isRunning()){
