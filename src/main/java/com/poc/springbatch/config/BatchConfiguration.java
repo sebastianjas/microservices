@@ -7,6 +7,7 @@ import com.poc.springbatch.batch.reader.QueryInput;
 import com.poc.springbatch.batch.writer.CSVWriter;
 import com.poc.springbatch.batch.listener.WriterListener;
 import com.poc.springbatch.model.Employee;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -26,6 +27,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableBatchProcessing
+@Slf4j
 public class BatchConfiguration {
 
     @Autowired
@@ -70,9 +72,9 @@ public class BatchConfiguration {
         cursorItemReader
                 .setSql("SELECT id, name, department, salary from EMPLOYEE " );
         /** "where create_date_time < ?");
-        cursorItemReader.setPreparedStatementSetter(queryInput);
-        cursorItemReader.setRowMapper(new EmployeeRowMapper()); **/
-        System.out.println("Query executed " + cursorItemReader.getSql());
+        cursorItemReader.setPreparedStatementSetter(queryInput); **/
+        cursorItemReader.setRowMapper(new EmployeeRowMapper());
+        log.info("Query executed " + cursorItemReader.getSql());
         return cursorItemReader;
     }
 
