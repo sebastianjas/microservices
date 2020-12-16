@@ -39,27 +39,29 @@ public class BatchConfiguration {
     @Autowired
     private CSVWriter csvWriter;
     @Autowired
+    private Processor processor;
+    @Autowired
     DataSource dataSource;
     @Autowired
     QueryInput queryInput;
 
 
     @Bean
-    public Step stepOne(EmployeeReader employeeReader) {
+    public Step stepOne(EmployeeReader employeeReader, Processor processor) {
         return stepBuilderFactory.get("stepOne")
                 .<Employee, Employee>chunk(100)
                 .reader(reader())
-                .processor(new Processor())
+                .processor(processor)
                 .writer(csvWriter.writer())
                 .listener(new WriterListener())
                 .build();
     }
 
     @Bean
-    public Job exportEmployeesJob(EmployeeReader employeeReader) {
+    public Job exportEmployeesJob(EmployeeReader employeeReader, Processor processor) {
         return jobBuilderFactory.get("Export employees to CSV job")
                 .incrementer(new RunIdIncrementer())
-                .flow(stepOne(employeeReader))
+                .flow(stepOne(employeeReader, processor))
                 .end()
                 .build();
     }
